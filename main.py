@@ -83,7 +83,7 @@ class User(SessionConnection):
         """
         Получение списка пользователей ВК для пользователя приложения
         """
-        print('Кого будем искть')
+        print('Кого будем искать')
         # input()
         # sex =
         # age_from =
@@ -123,7 +123,7 @@ class User(SessionConnection):
     #     """
     #     pass
 
-class DataBase:
+class ClientDataBase:
     """
     Класс для записи и обработки(хранения) информации в/из базы данных
     """
@@ -131,7 +131,9 @@ class DataBase:
         """
         Входные параметры для подключения к базе
         """
-        pass
+        self.client = MongoClient('localhost', 27017)
+        self.vkinder_db = self.client.vkinder_db
+        self.users_collection = self.vkinder_db.users
 
     def database_connection(self):
         """
@@ -139,17 +141,26 @@ class DataBase:
         """
         pass
 
-    def data_loading(self):
+    def data_loading(self, user_list):
         """
         Загрузка данных в базу
         """
-        pass
+        print('Загрузка данных в базу...')
+        self.users_collection.all_people.insert_many(user_list)
+        print('...данные о пользователях загружены')
 
     def data_upload(self):
         """
         Получение данных из базы
         """
-        pass
+        print('Загрузка данных из базы...')
+        for found_users in self.users_collection.all_people.find():
+            pprint(found_users)
+        print('...данные о пользователях загружены')
+
+    def drop_db(self):
+        self.users_collection.all_people.drop()
+        print('База очищена')
 
 class Selection:
     """
@@ -187,5 +198,9 @@ if __name__ == '__main__':
     user = User('', '')
     user.login_vk()
     user.get_application_user_information()
-    user.get_users()
+
+    db_base = ClientDataBase()
+    db_base.drop_db()
+    db_base.data_loading(user.get_users()['items'])
+    db_base.data_upload()
 
