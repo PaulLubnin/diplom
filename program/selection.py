@@ -30,7 +30,3 @@ class Selection(User):
         Отбор по интересам
         """
         pass
-
-
-select = Selection()
-select.get_application_user_information()
