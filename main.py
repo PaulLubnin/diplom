@@ -21,21 +21,19 @@ if __name__ == '__main__':
     town = input('В каком городе? ')
 
     found_users = user.get_users(sex, age_from, age_to, town)
-    print('+++++++++++++++++++')
-    pprint(found_users)
+    # print('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    # pprint(found_users)
 
-    selection = Selection(info_main_user, found_users)
+    selection = Selection(info_main_user)
     # selection.selection_user()
 
-    weight_interests = selection.count_weight(found_users, 'interests', 3)
-    # weight_music = selection.count_weight(found_users, 'music', 2)
-    # weight_books = selection.count_weight(found_users, 'books', 1)
-    print('+++++++++++++++++++')
-    pprint(weight_interests)
-    # print('+++++++++++++++++++')
-    # pprint(xxx2)
-    # print('+++++++++++++++++++')
-    # pprint(xxx3)
+    sorted_found_users = selection.sort_users(found_users)
+    # print('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    # pprint(sorted_found_users)
+
+    photos = user.get_photos(sorted_found_users)
+    print('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    pprint(photos)
 
     # db_base = ClientDataBase()
     # db_base.drop_db()

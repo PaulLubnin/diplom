@@ -61,14 +61,40 @@ class User(SessionConnection):
         """
         Получение списка пользователей ВК для пользователя приложения
         """
-        users = self.vk.users.search(count=10, fields=self.fields,
+        users = self.vk.users.search(count=1000, fields=self.fields,
                                      sex=sex, hometown=town,
                                      age_from=age_from, age_to=age_to)
         person_list = []
         for person in users['items']:
+            person.update({'weight': 0})
             if person['is_closed'] is False:
                 person_list.append(person)
         return person_list
+
+    def get_photos(self, users):
+        """
+        Получить 3 фотографии для записи в JSON
+        """
+        photos_users = []
+        for user in users:
+            response_get_photos = self.vk.photos.get(owner_id=user['id'], album_id='profile', extended=1)
+            unsorted_photos = {'id_user': user['id'],
+                               'photo': response_get_photos}
+            # pprint(unsorted_photos)
+            sort_photos = []
+            for photo in unsorted_photos['photo']['items']:
+                # print(photo)
+                sort_photos.append({
+                    'photo_id': photo['id'],
+                    'likes': photo['likes']['count']
+                })
+                sort_photos.sort(key=lambda likes: likes['likes'], reverse=True)
+            sort_photos = sort_photos[0:3]
+            photos_users.append({'user_id': unsorted_photos['id_user'],
+                                 'photos': sort_photos
+                                 })
+        return photos_users
+
 
     # def get_group(self, user_id):
     #     """
@@ -79,12 +105,6 @@ class User(SessionConnection):
     #     except KeyError:
     #         return {'count': 0, 'items': []}
 
-    # def get_photos(self):
-    #     """
-    #     Получить фотографии для записи в JSON
-    #     """
-    #     pass
-    #
     # def search_by_age(self):
     #     """
     #     Поиск по возрасту
