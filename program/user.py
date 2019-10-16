@@ -9,6 +9,7 @@ class User(SessionConnection):
     def __init__(self, login='', password=''):
         SessionConnection.__init__(self, login, password)
         self.fields = 'sex, bdate, home_town, interests, music, books, common_count'
+        self.count = 0
 
     def get_application_user_information(self):
         """
@@ -61,14 +62,31 @@ class User(SessionConnection):
         """
         Получение списка пользователей ВК для пользователя приложения
         """
-        users = self.vk.users.search(count=1000, fields=self.fields,
-                                     sex=sex, hometown=town,
-                                     age_from=age_from, age_to=age_to)
+        self.count += 1
         person_list = []
-        for person in users['items']:
-            person.update({'weight': 0})
-            if person['is_closed'] is False:
-                person_list.append(person)
+        if self.count == 1:
+            users = self.vk.users.search(count=50, fields=self.fields,
+                                         sex=sex, hometown=town,
+                                         age_from=age_from, age_to=age_to)
+            for person in users['items']:
+                person.update({'weight': 0})
+                if person['is_closed'] is False:
+                    person.pop('is_closed')
+                    person.pop('can_access_closed')
+                    person.pop('track_code')
+                    person_list.append(person)
+        elif self.count > 1:
+            users = self.vk.users.search(offset=self.count * 50, count=50,
+                                         fields=self.fields,
+                                         sex=sex, hometown=town,
+                                         age_from=age_from, age_to=age_to)
+            for person in users['items']:
+                person.update({'weight': 0})
+                if person['is_closed'] is False:
+                    person.pop('is_closed')
+                    person.pop('can_access_closed')
+                    person.pop('track_code')
+                    person_list.append(person)
         return person_list
 
     def get_photos(self, users):
