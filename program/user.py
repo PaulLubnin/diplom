@@ -1,5 +1,4 @@
 from ADPY4.diplom.program.connection import SessionConnection
-from pprint import pprint
 
 
 class User(SessionConnection):
@@ -112,7 +111,6 @@ class User(SessionConnection):
                                  'photos': sort_photos
                                  })
         return photos_users
-
 
     # def get_group(self, user_id):
     #     """

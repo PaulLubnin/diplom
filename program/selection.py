@@ -30,8 +30,6 @@ class Selection:
                         counter += word_counter[interest]
                 weight += counter * multiplier
                 user['weight'] += weight
-                # user.update({'weight': weight})
-                # pprint(users)
         return users
 
     def sort_users(self, users):
