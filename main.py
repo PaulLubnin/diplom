@@ -1,9 +1,15 @@
 from pprint import pprint
+import json
 
 from ADPY4.diplom.program.selection import Selection
 from ADPY4.diplom.program.user import User
 from ADPY4.diplom.date_base.database import ClientDataBase
 
+
+def write_json_file(what_write):
+    with open('10_photos.json', 'w', encoding='utf-8') as file:
+        json.dump(what_write, file, ensure_ascii=False)
+        print('\n...полученные данные записаны в JSON файл')
 
 def start_program(class_user, class_selection, class_database):
     while True:
@@ -24,10 +30,10 @@ def start_program(class_user, class_selection, class_database):
             age_to = int(input('До: '))
             town = input('В каком городе? ')
             found_users = class_user.get_users(sex, age_from, age_to, town)
-            print(f'Количество найденных пользователей: {len(found_users)}\n')
             sorted_found_users = class_selection.sort_users(found_users)
             photos = class_user.get_photos(sorted_found_users)
             pprint(photos)
+            write_json_file(photos)
             class_database.data_loading(photos)
 
         elif input_command == '2':
@@ -53,7 +59,6 @@ if __name__ == '__main__':
     user = User(login, password)
     user.login_vk()
     info_main_user = user.get_application_user_information()
-
     selection = Selection(info_main_user)
     database = ClientDataBase()
 

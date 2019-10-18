@@ -94,20 +94,20 @@ class User(SessionConnection):
         """
         photos_users = []
         for user in users:
-            response_get_photos = self.vk.photos.get(owner_id=user['id'], album_id='profile', extended=1)
+            response_get_photos = self.vk.photos.get(owner_id=user['id'],
+                                                     album_id='profile',
+                                                     extended=1)
             unsorted_photos = {'id_user': user['id'],
                                'photo': response_get_photos}
-            # pprint(unsorted_photos)
             sort_photos = []
             for photo in unsorted_photos['photo']['items']:
-                # print(photo)
                 sort_photos.append({
                     'photo_id': photo['id'],
                     'likes': photo['likes']['count']
                 })
                 sort_photos.sort(key=lambda likes: likes['likes'], reverse=True)
             sort_photos = sort_photos[0:3]
-            photos_users.append({'user_id': unsorted_photos['id_user'],
+            photos_users.append({'user_url': 'https://www.vk.com/id' + str(unsorted_photos['id_user']),
                                  'photos': sort_photos
                                  })
         return photos_users

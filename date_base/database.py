@@ -19,7 +19,7 @@ class ClientDataBase:
         Загрузка данных в базу
         """
         self.users_collection.all_people.insert_many(user_list)
-        print('...данные о пользователях загружены')
+        print('...данные о пользователях загружены в базу')
 
     def data_upload(self):
         """
@@ -27,7 +27,7 @@ class ClientDataBase:
         """
         for found_users in self.users_collection.all_people.find():
             pprint(found_users)
-        print('...данные о пользователях загружены')
+        print('...данные о пользователях загружены из базы')
 
     def drop_db(self):
         self.users_collection.all_people.drop()
